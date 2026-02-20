@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using UnityEngine.InputSystem;
 
 public class PlayerControllerExam05 : MonoBehaviour
@@ -9,8 +10,11 @@ public class PlayerControllerExam05 : MonoBehaviour
 
 
     // Exam 05 ...
+
     public int maxBulletCount = 10;
-    public float bulletRegenerateCooldown = 1f;
+    public float bulletRegenerateCooldown = 4f;
+    private int currentBulletCount;
+    private bool isCooldown = false;
     // ...
 
     private float horizontalInput;
@@ -21,6 +25,8 @@ public class PlayerControllerExam05 : MonoBehaviour
     {
         moveAction = InputSystem.actions.FindAction("Move");
         shootAction = InputSystem.actions.FindAction("Shoot");
+
+        currentBulletCount = maxBulletCount;
     }
 
     // Update is called once per frame
@@ -38,9 +44,31 @@ public class PlayerControllerExam05 : MonoBehaviour
             transform.position = new Vector3(xRange, transform.position.y, transform.position.z);
         }
 
-        if (shootAction.triggered)
+        if (shootAction.triggered && !isCooldown)
         {
-            Instantiate(projectilePrefab, transform.position, transform.rotation);
+            if (currentBulletCount > 0)
+            {
+                Instantiate(projectilePrefab, transform.position, transform.rotation);
+                currentBulletCount--;
+
+                if (currentBulletCount <= 0)
+                {
+                    StartCoroutine(BulletCooldown());
+                }
+            }
         }
+    }
+
+    IEnumerator BulletCooldown()
+    {
+        isCooldown = true;
+
+        // รอเวลาตามที่กำหนด
+        yield return new WaitForSeconds(bulletRegenerateCooldown);
+
+        // เติมกระสุนเต็มใหม่
+        currentBulletCount = maxBulletCount;
+
+        isCooldown = false;
     }
 }

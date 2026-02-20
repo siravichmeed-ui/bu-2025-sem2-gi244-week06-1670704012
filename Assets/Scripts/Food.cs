@@ -4,8 +4,10 @@ public class Food : MonoBehaviour
 {
     public int attackPoint = 5;
 
+    
     void OnTriggerEnter(Collider other)
     {
+
         var health = other.GetComponent<HealthV1>();
         if (health != null)
         {

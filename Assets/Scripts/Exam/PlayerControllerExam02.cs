@@ -10,6 +10,7 @@ public class PlayerControllerExam02 : MonoBehaviour
     private float verticalInput;
     private InputAction moveAction;
     private InputAction shootAction;
+    
 
     private void Awake()
     {
@@ -20,6 +21,22 @@ public class PlayerControllerExam02 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        verticalInput = moveAction.ReadValue<Vector2>().y;
+        
+        transform.Translate(verticalInput * speed * Time.deltaTime * Vector3.right);
+        verticalInput = moveAction.ReadValue<Vector2>().x;
+        if (transform.position.z < -zRange)
+        {
+            transform.position = new Vector3(transform.position.x,transform.position.y, -zRange);
+        }
+        if (transform.position.z > zRange)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, zRange);
+        }
+        if (shootAction.triggered)
+        {
+            
+            Instantiate(projectilePrefab, transform.position, transform.rotation);
+            
+        }
     }
 }
